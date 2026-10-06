@@ -7,10 +7,10 @@ List of algorithm
     LDF - tasks with precedence [aperidic]
     modified EDF  (1 | (prec, preem) | Lmax) [aperidic]
     Cyclic Executive [periodic]
-    Rate Monotonic [periodic]
-        EDF [periodic]
-    Deadline Monotonic - T > d [periodic]
-        EDF - T > d [periodic]
+    Rate Monotonic [periodic] OK
+        EDF [periodic] OK
+    Deadline Monotonic - T > d [periodic] OK
+        EDF - T > d [periodic] OK
     Immediate service [aperiodic, periodic]
     background Scheduling [aperiodic, periodic]
     RM + Polling Server [aperiodic, periodic]

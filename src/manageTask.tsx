@@ -18,8 +18,14 @@ type Props = {
 
 export default function TableTask({ tasks, setTask }: Props) {
   const [isModalOpen, setModal] = useState(false);
-
+  var Error = false;
   function addTask(formData: FormData) {
+    Error =
+      tasks.find((task) => task.Name == String(formData.get("Name"))) ||
+      Number(formData.get("Period")) == -1
+        ? true
+        : false;
+
     const newTask: TaskProd = {
       Name: String(formData.get("Name")),
       Period:
@@ -77,7 +83,9 @@ export default function TableTask({ tasks, setTask }: Props) {
                   <input type="text" id={attr} name={attr} placeholder={attr} />
                 </div>
               ))}
-              <button type="submit">add</button>
+              <button type="submit" disabled={Error}>
+                add
+              </button>
             </form>
           </div>
         </div>
