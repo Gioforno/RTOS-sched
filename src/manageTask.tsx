@@ -21,6 +21,12 @@ export default function TableTask({ tasks, setTask }: Props) {
   const [Error, setError] = useState(false);
 
   function addTask(formData: FormData) {
+    if (
+      !tasks.find((task) => task.Name == String(formData.get("Name"))) ||
+      Number(formData.get("Period")) <= 0
+    ) {
+      setError(true);
+    }
     const newTask: TaskProd = {
       Name: String(formData.get("Name")),
       Period:
@@ -35,12 +41,9 @@ export default function TableTask({ tasks, setTask }: Props) {
           : Number(formData.get("Period")),
     };
     console.log(newTask.Name);
-    if (
-      !tasks.find((task) => task.Name == newTask.Name) &&
-      newTask.Period > 0
-    ) {
-      setTask((tasks) => [...tasks, newTask]);
-    } else setError(true);
+
+    setTask((tasks) => [...tasks, newTask]);
+    //TODO effettivamente non aggiunge nulla ma non si capisce perchè: bisogna disabilitare
     closeTask();
   }
 
@@ -52,6 +55,7 @@ export default function TableTask({ tasks, setTask }: Props) {
     setModal(true);
   }
   function closeTask() {
+    setError(false);
     setModal(false);
   }
 
