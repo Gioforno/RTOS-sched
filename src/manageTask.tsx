@@ -18,7 +18,7 @@ type Props = {
 
 export default function TableTask({ tasks, setTask }: Props) {
   const [isModalOpen, setModal] = useState(false);
-  var Error = false;
+  var Error = true;
   function addTask(formData: FormData) {
     Error =
       tasks.find((task) => task.Name == String(formData.get("Name"))) ||
