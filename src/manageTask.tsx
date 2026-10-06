@@ -35,7 +35,7 @@ export default function TableTask({ tasks, setTask }: Props) {
 
   function addTask(formData: FormData) {
     const newTask: TaskProd = {
-      Name: String(formData.get("Name")),
+      Name: name,
       Period:
         Number(formData.get("Period")) != 0
           ? Number(formData.get("Period"))
@@ -60,6 +60,8 @@ export default function TableTask({ tasks, setTask }: Props) {
     setModal(true);
   }
   function closeTask() {
+    setName("");
+    setPeriod(-1);
     setModal(false);
   }
 
