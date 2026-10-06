@@ -18,24 +18,11 @@ type Props = {
 
 export default function TableTask({ tasks, setTask }: Props) {
   const [isModalOpen, setModal] = useState(false);
-  const [name, setName] = useState("");
-  const [period, setPeriod] = useState(-1);
-
-  const trimmed = name.trim();
-
-  const nameError = !trimmed
-    ? "Name is required"
-    : tasks.some((t) => t.Name === trimmed)
-      ? `A task named "${trimmed}" already exists`
-      : null;
-
-  const periodError = Number(period) < 0 ? "Period can't be negative" : null;
-
-  const hasError = !!nameError || !!periodError;
+  const [Error, setError] = useState(false);
 
   function addTask(formData: FormData) {
     const newTask: TaskProd = {
-      Name: name,
+      Name: String(formData.get("Name")),
       Period:
         Number(formData.get("Period")) != 0
           ? Number(formData.get("Period"))
@@ -48,7 +35,12 @@ export default function TableTask({ tasks, setTask }: Props) {
           : Number(formData.get("Period")),
     };
     console.log(newTask.Name);
-    setTask((tasks) => [...tasks, newTask]);
+    if (
+      !tasks.find((task) => task.Name == newTask.Name) &&
+      newTask.Period > 0
+    ) {
+      setTask((tasks) => [...tasks, newTask]);
+    } else setError(true);
     closeTask();
   }
 
@@ -60,8 +52,6 @@ export default function TableTask({ tasks, setTask }: Props) {
     setModal(true);
   }
   function closeTask() {
-    setName("");
-    setPeriod(-1);
     setModal(false);
   }
 
@@ -93,7 +83,7 @@ export default function TableTask({ tasks, setTask }: Props) {
                   <input type="text" id={attr} name={attr} placeholder={attr} />
                 </div>
               ))}
-              <button type="submit" disabled={hasError}>
+              <button type="submit" disabled={Error}>
                 add
               </button>
             </form>
