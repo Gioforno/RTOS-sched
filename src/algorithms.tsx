@@ -2,8 +2,8 @@
 
 /*
 List of algorithm
-    Jackson - EDD (1 | sync | Lmax) [aperidic]
-        Horn - EDF (1 | preem | Lmax) [aperidic]
+    Jackson - EDD (1 | sync | Lmax) [aperidic] OK
+        Horn - EDF (1 | preem | Lmax) [aperidic] OK
     LDF - tasks with precedence [aperidic]
     modified EDF  (1 | (prec, preem) | Lmax) [aperidic]
     Cyclic Executive [periodic]

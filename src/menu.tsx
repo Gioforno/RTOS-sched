@@ -5,7 +5,7 @@ export default function navBar() {
     <>
       <nav className="topbar">
         <div className="topbar-inner">
-          <span className="topbar-label">links</span>
+          links
           <ul className="topbar-links">
             <li>
               <a href="https://github.com" target="_blank">
