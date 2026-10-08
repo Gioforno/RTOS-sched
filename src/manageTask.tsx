@@ -32,8 +32,6 @@ type Props = {
 
 export default function TableTask({ tasks, setTask }: Props) {
   const [isModalOpen, setModal] = useState(false);
-  const [nome, setNome] = useState("");
-  const [period, setPeriod] = useState(-1);
   const [errors, setError] = useState<TaskErrors>({
     Name: "",
     Period: "",
@@ -43,12 +41,6 @@ export default function TableTask({ tasks, setTask }: Props) {
   });
 
   function addTask(formData: FormData) {
-    setNome(
-      tasks.find((task) => task.Name === String(formData.get("Name")))
-        ? ""
-        : String(formData.get("Name")),
-    );
-
     const newTask: TaskProd = {
       Name: tasks.find((task) => task.Name === String(formData.get("Name")))
         ? ""
@@ -91,8 +83,6 @@ export default function TableTask({ tasks, setTask }: Props) {
   }
 
   function handleTask() {
-    setNome("");
-    setPeriod(-1);
     setError({
       Name: "",
       Period: "",
