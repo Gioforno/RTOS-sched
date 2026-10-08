@@ -1,7 +1,21 @@
 import { useState } from "react";
 import "./manageTask.css";
 
-const AttrTask = ["Name", "Period", "CPU time", "Arrival Time", "Deadline"];
+type TaskErrors = {
+  Name: string;
+  Period: string;
+  CPU_time: string;
+  Arrival_Time: string;
+  Deadline: string;
+};
+
+const AttrTask: (keyof TaskErrors)[] = [
+  "Name",
+  "Period",
+  "CPU_time",
+  "Arrival_Time",
+  "Deadline",
+];
 
 type TaskProd = {
   Name: string;
@@ -18,33 +32,58 @@ type Props = {
 
 export default function TableTask({ tasks, setTask }: Props) {
   const [isModalOpen, setModal] = useState(false);
-  const [Error, setError] = useState(false);
+  const [nome, setNome] = useState("");
+  const [period, setPeriod] = useState(-1);
+  const [errors, setError] = useState<TaskErrors>({
+    Name: "",
+    Period: "",
+    CPU_time: "",
+    Arrival_Time: "",
+    Deadline: "",
+  });
 
   function addTask(formData: FormData) {
-    if (
-      !tasks.find((task) => task.Name == String(formData.get("Name"))) ||
-      Number(formData.get("Period")) <= 0
-    ) {
-      setError(true);
-    }
+    setNome(
+      tasks.find((task) => task.Name === String(formData.get("Name")))
+        ? ""
+        : String(formData.get("Name")),
+    );
+
     const newTask: TaskProd = {
-      Name: String(formData.get("Name")),
+      Name: tasks.find((task) => task.Name === String(formData.get("Name")))
+        ? ""
+        : String(formData.get("Name")),
       Period:
-        Number(formData.get("Period")) != 0
+        Number(formData.get("Period")) > -1
           ? Number(formData.get("Period"))
           : -1,
-      CpuTime: Number(formData.get("CPU time")),
-      ArrivalTime: Number(formData.get("Arrival Time")),
+      CpuTime:
+        Number(formData.get("CPU_time")) > 0
+          ? Number(formData.get("CPU_time"))
+          : -1,
+      ArrivalTime:
+        Number(formData.get("Arrival_Time")) > -1
+          ? Number(formData.get("Arrival_Time"))
+          : 0,
       Deadline:
         Number(formData.get("Deadline")) != 0
           ? Number(formData.get("Deadline"))
           : Number(formData.get("Period")),
     };
-    console.log(newTask.Name);
 
-    setTask((tasks) => [...tasks, newTask]);
-    //TODO effettivamente non aggiunge nulla ma non si capisce perchè: bisogna disabilitare
-    closeTask();
+    const newError = {
+      Name: newTask.Name == "" ? "Invalid Name" : "",
+      Period: newTask.Period == -1 ? "Invalid Period" : "",
+      CPU_time: newTask.CpuTime == -1 ? "Invalid CPU time" : "",
+      Arrival_Time: newTask.ArrivalTime == -1 ? "Invalid Arrival Time" : "",
+      Deadline: newTask.Deadline == -1 ? "Invalid Deadline" : "",
+    };
+    if (Object.values(newError).some((error) => error !== "")) {
+      setError(newError);
+    } else {
+      setTask((tasks) => [...tasks, newTask]);
+      closeTask();
+    }
   }
 
   function delTask(nome: string) {
@@ -52,10 +91,19 @@ export default function TableTask({ tasks, setTask }: Props) {
   }
 
   function handleTask() {
+    setNome("");
+    setPeriod(-1);
+    setError({
+      Name: "",
+      Period: "",
+      CPU_time: "",
+      Arrival_Time: "",
+      Deadline: "",
+    });
     setModal(true);
   }
+
   function closeTask() {
-    setError(false);
     setModal(false);
   }
 
@@ -71,25 +119,40 @@ export default function TableTask({ tasks, setTask }: Props) {
       {isModalOpen && (
         <div id="windowTask" className="modal">
           <div id="modal-content">
-            <button id="close" className="close" onClick={closeTask}>
-              &times;
-            </button>
+            <span
+              onClick={closeTask}
+              style={{
+                padding: 20,
+                display: "block",
+                cursor: "pointer",
+                textAlign: "left",
+              }}
+            >
+              <button id="close" className="close">
+                &times;
+              </button>
+            </span>
+
             <h4 className="eyebrow-heading">Add here a new task!</h4>
             <ul className="modal-hint">
-              <li>leave blank period if aperiodic</li>
+              <li>set 0 period if aperiodic</li>
               <li>Priority is set by the algorithm you choose</li>
               <li>leave blank deadline if equal to period</li>
             </ul>
             <form action={addTask} className="task-form">
               {AttrTask.map((attr) => (
                 <div className="field" key={attr}>
-                  <label htmlFor={attr}>{attr}</label>
+                  <label htmlFor={attr}>{attr.replace(/_/g, " ")}</label>
                   <input type="text" id={attr} name={attr} placeholder={attr} />
+                  {errors[attr] && (
+                    <p style={{ color: "red" }} role="alert">
+                      {errors[attr]}
+                    </p>
+                  )}
                 </div>
               ))}
-              <button type="submit" disabled={Error}>
-                add
-              </button>
+
+              <button type="submit">add</button>
             </form>
           </div>
         </div>
